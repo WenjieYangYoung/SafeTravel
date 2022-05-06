@@ -1,21 +1,33 @@
 package com.example.openDataCoursework
 
+import android.content.ContentValues.TAG
 import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.TextView.OnEditorActionListener
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.here.sdk.core.GeoCoordinates
+import com.here.sdk.mapview.MapScene
+import com.here.sdk.mapview.MapScheme
+import com.here.sdk.mapview.MapView
+
+
+private lateinit var mapView: MapView;
 
 const val EXTRA_MESSAGE = "com.example.openDataCoursework.MESSAGE"
 class MainActivity : AppCompatActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
+        mapView = findViewById(R.id.map_view);
+        mapView.onCreate(savedInstanceState);
+        loadMapScene();
         // These functions below need be set in the onCreat() function, important !!!
         // Otherwise, they do not work
         val editText = this.findViewById<EditText>(R.id.searchArea)
@@ -64,5 +76,34 @@ class MainActivity : AppCompatActivity() {
         // Do something in response to button
         val intent = Intent(this, Settings::class.java)
         startActivity(intent)
+    }
+    private fun loadMapScene() {
+        // Load a scene from the HERE SDK to render the map with a map scheme.
+        mapView.mapScene.loadScene(
+            MapScheme.NORMAL_DAY,
+            MapScene.LoadSceneCallback { mapError ->
+                if (mapError == null) {
+                    val distanceInMeters = (1000 * 10).toDouble()
+                    mapView.camera.lookAt(
+                        GeoCoordinates(50.90395, -1.40428), distanceInMeters
+                    )
+                } else {
+                    Log.d(TAG, "Loading map failed: mapError: " + mapError.name)
+                }
+            })
+    }
+    override fun onPause() {
+        super.onPause()
+        mapView.onPause()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        mapView.onResume()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mapView.onDestroy()
     }
 }
