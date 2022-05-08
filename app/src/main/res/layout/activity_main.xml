@@ -45,8 +45,8 @@
         android:layout_marginStart="8dp"
         android:layout_marginBottom="8dp"
         android:background="@color/white"
-        android:onClick="Marked"
-        android:text="@string/Marked"
+        android:onClick="addExampleRoute"
+        android:text="addRoute"
         android:textAlignment="center"
         android:textColor="@color/black"
         android:textSize="16sp"
@@ -84,5 +84,6 @@
         app:layout_constraintEnd_toStartOf="@+id/Settings"
         app:layout_constraintHorizontal_bias="0.493"
         app:layout_constraintStart_toEndOf="@+id/Marked" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

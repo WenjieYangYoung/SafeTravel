@@ -11,23 +11,25 @@ import android.widget.EditText
 import android.widget.TextView.OnEditorActionListener
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.here.sdk.core.GeoCoordinates
-import com.here.sdk.mapview.MapScene
 import com.here.sdk.mapview.MapScheme
 import com.here.sdk.mapview.MapView
 
 
-private lateinit var mapView: MapView;
-
 const val EXTRA_MESSAGE = "com.example.openDataCoursework.MESSAGE"
 class MainActivity : AppCompatActivity() {
 
+    lateinit private var mapView: MapView;
+    lateinit private var routeExample: Routing;
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_main);
         mapView = findViewById(R.id.map_view);
         mapView.onCreate(savedInstanceState);
         loadMapScene();
+
+
         // These functions below need be set in the onCreat() function, important !!!
         // Otherwise, they do not work
         val editText = this.findViewById<EditText>(R.id.searchArea)
@@ -40,6 +42,7 @@ class MainActivity : AppCompatActivity() {
         editText.isSingleLine = true
         // Define search function
         fun search() {
+
             val searchContext: String = editText.text.toString()
             if (TextUtils.isEmpty(searchContext)) {
                 Toast.makeText(this, "The input box is empty, please enter", Toast.LENGTH_SHORT).show()
@@ -61,6 +64,17 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
+
+
+
+
+
+
+
+
+
+
+
     /** Called when the user taps the Send button */
     fun Navigation(view: View) {
         // Do something in response to button
@@ -78,19 +92,18 @@ class MainActivity : AppCompatActivity() {
         startActivity(intent)
     }
     private fun loadMapScene() {
-        // Load a scene from the HERE SDK to render the map with a map scheme.
         mapView.mapScene.loadScene(
-            MapScheme.NORMAL_DAY,
-            MapScene.LoadSceneCallback { mapError ->
-                if (mapError == null) {
-                    val distanceInMeters = (1000 * 10).toDouble()
-                    mapView.camera.lookAt(
-                        GeoCoordinates(50.90395, -1.40428), distanceInMeters
-                    )
-                } else {
-                    Log.d(TAG, "Loading map failed: mapError: " + mapError.name)
-                }
-            })
+            MapScheme.NORMAL_DAY
+        ) { mapError ->
+            if (mapError == null) {
+                routeExample = Routing(this@MainActivity, mapView)
+            } else {
+                Log.d(TAG, "Loading map failed: mapErrorCode: " + mapError.name)
+            }
+        }
+    }
+    fun addExampleRoute(view: View?) {
+        routeExample.addExampleRoute()
     }
     override fun onPause() {
         super.onPause()
