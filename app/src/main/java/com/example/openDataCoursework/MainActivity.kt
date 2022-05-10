@@ -45,6 +45,9 @@ class MainActivity : AppCompatActivity() {
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 search()
             }
+
+
+
             false
         })
     }
@@ -65,4 +68,5 @@ class MainActivity : AppCompatActivity() {
         val intent = Intent(this, Settings::class.java)
         startActivity(intent)
     }
+
 }
