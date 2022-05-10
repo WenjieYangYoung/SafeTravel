@@ -12,7 +12,7 @@
         <activity
             android:name=".ResultNavigation"
             android:exported="false"
-            android:parentActivityName=".NavigationFunction" />/>
+            android:parentActivityName=".NavigationFunction" />
         <activity
             android:name=".ReturnSlide"
             android:exported="false" />

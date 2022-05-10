@@ -4,7 +4,8 @@
 <!--TextView是一个Android的控件用于构建用户图形界面。
 它包含有许多不同的属性，诸如android:layout_width, android:layout_height等用来设置它的宽度和高度等。
 @string指的是res/values文件夹下的strings.xml文件-->
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"

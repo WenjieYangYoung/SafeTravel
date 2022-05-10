@@ -12,14 +12,15 @@ import androidx.appcompat.app.AppCompatActivity
 
 const val EXTRA_MESSAGE = "com.example.openDataCoursework.MESSAGE"
 class MainActivity : AppCompatActivity() {
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // These functions below need be set in the onCreat() function, important !!!
-        // Otherwise, they do not work
+
         val editText = this.findViewById<EditText>(R.id.searchArea)
-        //在该Editview获得焦点的时候将“回车”键改为“搜索”
+
         // Change the "Enter" key to "Search" when the Editview gets focus.
         editText.imeOptions = EditorInfo.IME_ACTION_SEARCH
         editText.inputType = EditorInfo.TYPE_CLASS_TEXT
@@ -28,14 +29,20 @@ class MainActivity : AppCompatActivity() {
         editText.isSingleLine = true
         // Define search function
         fun search() {
-            val searchContext: String = editText.text.toString()
-            if (TextUtils.isEmpty(searchContext)) {
+            val longitude: Float = editText.text.toString().toFloat()
+            if (TextUtils.isEmpty(longitude.toString())) {
                 Toast.makeText(this, "The input box is empty, please enter", Toast.LENGTH_SHORT).show()
             } else {
+
 //             Here we should input the API that we use to use the map to search the data
 //             Here is an example you can check
+                val databaseAccess : DatabaseAccess = DatabaseAccess.getInstance(applicationContext)
+                databaseAccess.open()
+
+                // Get the crime type by longitude value
+                var crimetype : String = databaseAccess.getCrimeType(longitude)
                 val intent = Intent(this, ResultOfSearchArea::class.java).apply {
-                    putExtra(EXTRA_MESSAGE, searchContext) }
+                    putExtra(EXTRA_MESSAGE, crimetype) }
                 startActivity(intent)
             }
         }
