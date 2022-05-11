@@ -47,26 +47,6 @@ class MainActivity : AppCompatActivity() {
         private lateinit var permissionsRequestor: PermissionsRequestor;
         private lateinit var mapView: MapView;
         private lateinit var searchExample: SearchExample;
-        override fun onCreate(savedInstanceState: Bundle?) {
-            super.onCreate(savedInstanceState)
-            supportActionBar?.hide();// Hide ActionBar
-            setContentView(R.layout.activity_main)
-            Log.d("", "HERE SDK version: " + SDKBuildInformation.sdkVersion().versionName)
-            // Get a MapView instance from layout.
-            mapView = findViewById(R.id.map_view)
-            mapView!!.onCreate(savedInstanceState)
-            handleAndroidPermissions()
-            // These functions below need be set in the onCreat() function, important !!!
-            // Otherwise, they do not work
-            val origin = this.findViewById<EditText>(R.id.originSearch)
-            val destination = this.findViewById<EditText>(R.id.destinationSearch)
-            //在该Editview获得焦点的时候将“回车”键改为“搜索”
-            // Change the "Enter" key to "Search" when the Editview gets focus.
-            destination.imeOptions = EditorInfo.IME_ACTION_SEARCH
-            destination.inputType = EditorInfo.TYPE_CLASS_TEXT
-            origin.inputType = EditorInfo.TYPE_CLASS_TEXT
-            //设置单行输入，不然回车【搜索】会换行
-            // Set single line input, otherwise, the “Enter” key will realize the line feed function
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
