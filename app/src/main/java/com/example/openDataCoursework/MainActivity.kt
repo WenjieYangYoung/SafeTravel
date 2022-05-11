@@ -49,9 +49,9 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var routeExample: Routing;
 
-        private var permissionsRequestor: PermissionsRequestor? = null
-        private var mapView: MapView? = null
-        private var searchExample: SearchExample? = null
+        private lateinit var permissionsRequestor: PermissionsRequestor;
+        private lateinit var mapView: MapView;
+        private lateinit var searchExample: SearchExample;
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
             supportActionBar?.hide();// Hide ActionBar
