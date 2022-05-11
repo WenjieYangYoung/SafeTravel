@@ -18,7 +18,6 @@
  */
 package com.example.openDataCoursework
 
-
 import android.content.ContentValues.TAG
 import android.content.Intent
 import android.os.Bundle
@@ -30,15 +29,11 @@ import android.widget.EditText
 import android.widget.TextView.OnEditorActionListener
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-
 import com.here.sdk.mapview.MapScheme
 import com.here.sdk.mapview.MapView
 import com.here.sdk.core.GeoCoordinates
-
-
 import com.example.openDataCoursework.PermissionsRequestor.ResultListener
 import com.here.sdk.core.engine.SDKBuildInformation
-
 
 const val EXTRA_MESSAGE = "com.example.openDataCoursework.MESSAGE"
 const val Origin = "com.example.openDataCoursework.Origin"
@@ -73,58 +68,65 @@ class MainActivity : AppCompatActivity() {
             //设置单行输入，不然回车【搜索】会换行
             // Set single line input, otherwise, the “Enter” key will realize the line feed function
 
-            // Define search function
-                    destination.isSingleLine = true
-                    var searchContextOrigin: String? = null
-
-                    // Define the Obtain function
-                    fun obtain() {
-                        searchContextOrigin = origin.text.toString()
-                        if (TextUtils.isEmpty(searchContextOrigin)) {
-                            Toast.makeText(this, "Please enter the Origin", Toast.LENGTH_SHORT)
-                                .show()
-                        }
-                    }
-
-                    // Define the Search function
-                    fun search(searchContextOrigin: String) {
-                        val searchContextDestination: String = destination.text.toString()
-                        if (TextUtils.isEmpty(searchContextDestination) || TextUtils.isEmpty(
-                                searchContextOrigin
-                            )
-                        ) {
-                            Toast.makeText(
-                                this,
-                                "Please enter the Origin and Destination",
-                                Toast.LENGTH_SHORT
-                            ).show()
-
-                        } else {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        supportActionBar?.hide();// Hide ActionBar
+        setContentView(R.layout.activity_main)
+        Log.d("", "HERE SDK version: " + SDKBuildInformation.sdkVersion().versionName)
+        // Get a MapView instance from layout.
+        mapView = findViewById(R.id.map_view)
+        mapView!!.onCreate(savedInstanceState)
+        handleAndroidPermissions()
+        // These functions below need be set in the onCreat() function, important !!!
+        // Otherwise, they do not work
+        val origin = this.findViewById<EditText>(R.id.originSearch)
+        val destination = this.findViewById<EditText>(R.id.destinationSearch)
+        //在该Editview获得焦点的时候将“回车”键改为“搜索”
+        // Change the "Enter" key to "Search" when the Editview gets focus.
+        destination.imeOptions = EditorInfo.IME_ACTION_SEARCH
+        destination.inputType = EditorInfo.TYPE_CLASS_TEXT
+        origin.inputType = EditorInfo.TYPE_CLASS_TEXT
+        //设置单行输入，不然回车【搜索】会换行
+        // Set single line input, otherwise, the “Enter” key will realize the line feed function
+        destination.isSingleLine = true
+        var searchContextOrigin: String? = null
+        // Define the Obtain function
+        fun obtain() {
+            searchContextOrigin = origin.text.toString()
+            if (TextUtils.isEmpty(searchContextOrigin)) {
+                Toast.makeText(this, "Please enter the Origin", Toast.LENGTH_SHORT).show()
+            }
+        }
+        // Define the Search function
+        fun search(searchContextOrigin: String) {
+            val searchContextDestination: String = destination.text.toString()
+            if (TextUtils.isEmpty(searchContextDestination) || TextUtils.isEmpty(searchContextOrigin)) {
+                Toast.makeText(this, "Please enter the Origin and Destination", Toast.LENGTH_SHORT).show()
+            } else {
 //             Here we should input the API that we use to use the map to search the data
 //             Here is an example you can check
-                            searchExample!!.originClicked(searchContextOrigin)
-                            searchExample!!.destinationClicked(searchContextDestination)
+                searchExample!!.originClicked(searchContextOrigin)
+                searchExample!!.destinationClicked(searchContextDestination)
 //                val intent = Intent(this, ResultNavigation::class.java).apply {
 //                    putExtra(Origin, searchContextOrigin)
 //                    putExtra(Destination, searchContextDestination)
 //                }
 //                startActivity(intent)
-                        }
-                    }
-
-                    //添加imeOptions的监听
-                    //add the listener of imeOptions
-                    destination.setOnEditorActionListener(OnEditorActionListener { textView, actionId, keyEvent ->
-                        if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                            searchContextOrigin?.let { search(it) }
-                        }
-                        false
-                    })
-                    origin.setOnEditorActionListener(OnEditorActionListener { textView, actionId, keyEvent ->
-                        obtain()
-                        false
-                    })
-                }
+            }
+        }
+        //添加imeOptions的监听
+        //add the listener of imeOptions
+        destination.setOnEditorActionListener(OnEditorActionListener { textView, actionId, keyEvent ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                searchContextOrigin?.let { search(it) }
+            }
+            false
+        })
+        origin.setOnEditorActionListener(OnEditorActionListener { textView, actionId, keyEvent ->
+            obtain()
+            false
+        })
+    }
             private fun handleAndroidPermissions() {
                 permissionsRequestor = PermissionsRequestor(this)
                 permissionsRequestor!!.request(object : ResultListener {
