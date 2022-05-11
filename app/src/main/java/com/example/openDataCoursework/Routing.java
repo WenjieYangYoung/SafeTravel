@@ -60,8 +60,8 @@ public class Routing {
     private final List<MapPolygon> mapPolygons = new ArrayList<>();
     private final RoutingEngine routingEngine;
     private final SearchEngine searchEngine;
-    private GeoCoordinates startGeoCoordinates= new GeoCoordinates(50.898833,-1.404845);
-    private GeoCoordinates destinationGeoCoordinates= new GeoCoordinates(50.911704,-1.403742);
+    private GeoCoordinates startGeoCoordinates;
+    private GeoCoordinates destinationGeoCoordinates;
     private final List<String> chargingStationsIDs = new ArrayList<>();
     public Routing(Context context,MapView mapView){
         this.context = context;
@@ -81,6 +81,12 @@ public class Routing {
         } catch (InstantiationErrorException e) {
             throw new RuntimeException("Initialization of SearchEngine failed: " + e.error.name());
         }
+    }
+    public void setStart(GeoCoordinates coord){
+        startGeoCoordinates=coord;
+    }
+    public void setEnd(GeoCoordinates coord){
+        destinationGeoCoordinates=coord;
     }
     public void addExampleRoute() {
         chargingStationsIDs.clear();
@@ -102,7 +108,6 @@ public class Routing {
                 Route route = list.get(0);
                 showRouteOnMap(route);
                 logRouteViolations(route);
-                //searchAlongARoute(route);
             }
         });
     }

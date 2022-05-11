@@ -13,6 +13,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.here.sdk.mapview.MapScheme
 import com.here.sdk.mapview.MapView
+import com.here.sdk.core.GeoCoordinates
 
 
 const val EXTRA_MESSAGE = "com.example.openDataCoursework.MESSAGE"
@@ -97,10 +98,18 @@ class MainActivity : AppCompatActivity() {
         ) { mapError ->
             if (mapError == null) {
                 routeExample = Routing(this@MainActivity, mapView)
+               // routeExample.setEnd(coord)
+               // routeExample.setStart(coord)
             } else {
                 Log.d(TAG, "Loading map failed: mapErrorCode: " + mapError.name)
             }
         }
+    }
+    fun changeStartPoint(coord: GeoCoordinates?){
+        routeExample.setStart(coord);
+    }
+    fun changeEnd(coord: GeoCoordinates?){
+        routeExample.setEnd(coord);
     }
     fun addExampleRoute(view: View?) {
         routeExample.addExampleRoute()
