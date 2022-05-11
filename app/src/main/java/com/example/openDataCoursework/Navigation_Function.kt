@@ -9,8 +9,8 @@ import android.widget.Toast
 import android.widget.TextView.OnEditorActionListener
 import androidx.appcompat.app.AppCompatActivity
 
-const val Origin = "com.example.openDataCoursework.Origin"
-const val Destination = "com.example.openDataCoursework.Destination"
+//const val Origin = "com.example.openDataCoursework.Origin"
+//const val Destination = "com.example.openDataCoursework.Destination"
 
 class NavigationFunction : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

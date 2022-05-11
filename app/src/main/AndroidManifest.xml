@@ -41,6 +41,8 @@
             android:name=".NavigationFunction"
             android:exported="false"
             android:parentActivityName=".MainActivity" />
+        <meta-data android:name="com.here.sdk.access_key_id" android:value="WfO6PBiN6GrLQYFKpHCi9Q" />
+        <meta-data android:name="com.here.sdk.access_key_secret" android:value="geYSxSOvAGtDiG2xlNjeKpct-jI2clFxdLeLp1IpJgGYy7ZjGxdhESYnUke8LUork8_db-GwwXcJfIxykTfHfw" />
         <activity
             android:name=".MainActivity"
             android:exported="true">
@@ -51,5 +53,4 @@
             </intent-filter>
         </activity>
     </application>
-
 </manifest>
