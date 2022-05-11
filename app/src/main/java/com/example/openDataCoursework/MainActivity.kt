@@ -136,6 +136,7 @@ class MainActivity : AppCompatActivity() {
                 ) { mapError ->
                     if (mapError == null) {
                         routeExample = Routing(this@MainActivity, mapView)
+                        searchExample = SearchExample(this, mapView!!)
                         // routeExample.setEnd(coord)
                         // routeExample.setStart(coord)
                     } else {
