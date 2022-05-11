@@ -32,11 +32,14 @@ import com.here.sdk.mapview.MapViewBase.PickMapItemsCallback
 import com.here.sdk.search.*
 
 class SearchExample(private val context: Context, private val mapView: MapView) {
+
+    private lateinit var routeExample: Routing
     private var camera: MapCamera
     private val mapMarkerList: MutableList<MapMarker> = ArrayList()
     private val originList: MutableList<GeoCoordinates> = ArrayList()
     private val destinationList: MutableList<GeoCoordinates> = ArrayList()
     private var searchEngine: SearchEngine? = null
+
     fun onSearchButtonClicked() {
         // Search for "Pizza" and show the results on the map.
         searchExample()
@@ -100,6 +103,14 @@ class SearchExample(private val context: Context, private val mapView: MapView) 
         if (queryString != null) {
             geocodeOriginAddress(queryString, geoCoordinates)
         }
+    }
+
+    public fun getOriginList(): MutableList<GeoCoordinates> {
+        return originList;
+    }
+
+    public fun getDestinationList(): MutableList<GeoCoordinates> {
+        return destinationList;
     }
 
     private fun destinationSearch(destination:String?) { // Search destination
@@ -205,7 +216,6 @@ class SearchExample(private val context: Context, private val mapView: MapView) 
                 showDialog("Search", "Error: $searchError")
                 return@SearchCallback
             }
-
             // If error is null, list is guaranteed to be not empty.
             showDialog("Search", "Results: " + list!!.size)
 

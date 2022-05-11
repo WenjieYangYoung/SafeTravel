@@ -35,18 +35,17 @@ import com.here.sdk.core.GeoCoordinates
 import com.example.openDataCoursework.PermissionsRequestor.ResultListener
 import com.here.sdk.core.engine.SDKBuildInformation
 
+
 const val EXTRA_MESSAGE = "com.example.openDataCoursework.MESSAGE"
 const val Origin = "com.example.openDataCoursework.Origin"
 const val Destination = "com.example.openDataCoursework.Destination"
 
 class MainActivity : AppCompatActivity() {
 
-
-    private lateinit var routeExample: Routing;
-
-        private lateinit var permissionsRequestor: PermissionsRequestor;
-        private lateinit var mapView: MapView;
-        private lateinit var searchExample: SearchExample;
+        private var routeExample: Routing? = null
+        private var permissionsRequestor: PermissionsRequestor? = null
+        private var mapView: MapView? = null
+        private var searchExample: SearchExample? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -85,8 +84,13 @@ class MainActivity : AppCompatActivity() {
             } else {
 //             Here we should input the API that we use to use the map to search the data
 //             Here is an example you can check
-                searchExample!!.originClicked(searchContextOrigin)
-                searchExample!!.destinationClicked(searchContextDestination)
+                searchExample?.originClicked(searchContextOrigin)
+//                var originList = searchExample.getOriginList()
+//                changeStartPoint(originList[0])
+                searchExample?.destinationClicked(searchContextDestination)
+//                var destinationList = searchExample.getDestinationList()
+//                changeEnd(destinationList[0])
+
 //                val intent = Intent(this, ResultNavigation::class.java).apply {
 //                    putExtra(Origin, searchContextOrigin)
 //                    putExtra(Destination, searchContextDestination)
@@ -106,6 +110,12 @@ class MainActivity : AppCompatActivity() {
             obtain()
             false
         })
+
+        var originList = searchExample?.getOriginList()
+        changeStartPoint(originList?.get(0))
+        var destinationList = searchExample?.getDestinationList()
+        changeEnd(destinationList?.get(0))
+
     }
             private fun handleAndroidPermissions() {
                 permissionsRequestor = PermissionsRequestor(this)
@@ -127,7 +137,7 @@ class MainActivity : AppCompatActivity() {
                 grantResults: IntArray
             ) {
                 super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-                permissionsRequestor!!.onRequestPermissionsResult(requestCode, grantResults)
+                permissionsRequestor?.onRequestPermissionsResult(requestCode, grantResults)
             }
 
             private fun loadMapScene() {
@@ -136,7 +146,7 @@ class MainActivity : AppCompatActivity() {
                 ) { mapError ->
                     if (mapError == null) {
                         routeExample = Routing(this@MainActivity, mapView)
-                        searchExample = SearchExample(this, mapView!!)
+                        searchExample = SearchExample(this@MainActivity, mapView!!)
                         // routeExample.setEnd(coord)
                         // routeExample.setStart(coord)
                     } else {
@@ -146,23 +156,23 @@ class MainActivity : AppCompatActivity() {
             }
 
             fun changeStartPoint(coord: GeoCoordinates?) {
-                routeExample.setStart(coord);
+                routeExample?.setStart(coord);
             }
 
             fun changeEnd(coord: GeoCoordinates?) {
-                routeExample.setEnd(coord);
+                routeExample?.setEnd(coord);
             }
 
             fun addExampleRoute(view: View?) {
-                routeExample.addExampleRoute()
+                routeExample?.addExampleRoute()
             }
 
             fun searchExampleButtonClicked(view: View?) {
-                searchExample!!.onSearchButtonClicked()
+                searchExample?.onSearchButtonClicked()
             }
 
             fun geocodeAnAddressButtonClicked(view: View?) {
-                searchExample!!.onGeocodeButtonClicked()
+                searchExample?.onGeocodeButtonClicked()
             }
 
 //    fun originSearchAchieve(origin: String?) {
@@ -175,18 +185,17 @@ class MainActivity : AppCompatActivity() {
 
             override fun onPause() {
                 super.onPause()
-                mapView!!.onPause()
+                mapView?.onPause()
             }
 
             override fun onResume() {
                 super.onResume()
-                mapView!!.onResume()
-
+                mapView?.onResume()
             }
 
             override fun onDestroy() {
                 super.onDestroy()
-                mapView!!.onDestroy()
+                mapView?.onDestroy()
             }
 
             companion object {
@@ -199,7 +208,6 @@ class MainActivity : AppCompatActivity() {
                 searchExample?.clearMap()
             }
 
-
 //    fun Marked(view: View) {
 //        // Do something in response to button
 //        val intent = Intent(this, Marked::class.java)
@@ -210,7 +218,5 @@ class MainActivity : AppCompatActivity() {
 //        val intent = Intent(this, Settings::class.java)
 //        startActivity(intent)
 //    }
-
-
 }
 

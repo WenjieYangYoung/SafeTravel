@@ -58,6 +58,7 @@ public class Routing {
     private final List<MapMarker> mapMarkers = new ArrayList<>();
     private final List<MapPolyline> mapPolylines = new ArrayList<>();
     private final List<MapPolygon> mapPolygons = new ArrayList<>();
+
     private final RoutingEngine routingEngine;
     private final SearchEngine searchEngine;
     private GeoCoordinates startGeoCoordinates;
@@ -90,7 +91,6 @@ public class Routing {
     }
     public void addExampleRoute() {
         chargingStationsIDs.clear();
-
         Waypoint startWaypoint = new Waypoint(startGeoCoordinates);
         Waypoint destinationWaypoint = new Waypoint(destinationGeoCoordinates);
         List<Waypoint> waypoints =
