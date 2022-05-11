@@ -18,7 +18,6 @@
  */
 package com.example.openDataCoursework
 
-
 import android.content.ContentValues.TAG
 import android.content.Intent
 import android.os.Bundle
@@ -30,15 +29,11 @@ import android.widget.EditText
 import android.widget.TextView.OnEditorActionListener
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-
 import com.here.sdk.mapview.MapScheme
 import com.here.sdk.mapview.MapView
 import com.here.sdk.core.GeoCoordinates
-
-
 import com.example.openDataCoursework.PermissionsRequestor.ResultListener
 import com.here.sdk.core.engine.SDKBuildInformation
-
 
 const val EXTRA_MESSAGE = "com.example.openDataCoursework.MESSAGE"
 const val Origin = "com.example.openDataCoursework.Origin"
@@ -46,12 +41,11 @@ const val Destination = "com.example.openDataCoursework.Destination"
 
 class MainActivity : AppCompatActivity() {
 
-
-    private lateinit var routeExample: Routing;
-
+        private lateinit var routeExample: Routing;
         private var permissionsRequestor: PermissionsRequestor? = null
         private var mapView: MapView? = null
         private var searchExample: SearchExample? = null
+
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
             supportActionBar?.hide();// Hide ActionBar
@@ -72,8 +66,6 @@ class MainActivity : AppCompatActivity() {
             origin.inputType = EditorInfo.TYPE_CLASS_TEXT
             //设置单行输入，不然回车【搜索】会换行
             // Set single line input, otherwise, the “Enter” key will realize the line feed function
-
-            // Define search function
                     destination.isSingleLine = true
                     var searchContextOrigin: String? = null
 
