@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.openDataCoursework">
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:allowBackup="true"
@@ -12,7 +14,7 @@
         <activity
             android:name=".ResultNavigation"
             android:exported="false"
-            android:parentActivityName=".NavigationFunction" />/>
+            android:parentActivityName=".NavigationFunction" />
         <activity
             android:name=".ReturnSlide"
             android:exported="false" />
@@ -37,6 +39,8 @@
             android:name=".NavigationFunction"
             android:exported="false"
             android:parentActivityName=".MainActivity" />
+        <meta-data android:name="com.here.sdk.access_key_id" android:value="WfO6PBiN6GrLQYFKpHCi9Q" />
+        <meta-data android:name="com.here.sdk.access_key_secret" android:value="geYSxSOvAGtDiG2xlNjeKpct-jI2clFxdLeLp1IpJgGYy7ZjGxdhESYnUke8LUork8_db-GwwXcJfIxykTfHfw" />
         <activity
             android:name=".MainActivity"
             android:exported="true">
@@ -47,5 +51,4 @@
             </intent-filter>
         </activity>
     </application>
-
 </manifest>

@@ -9,6 +9,7 @@ import android.content.Intent
 class ResultOfSearchArea : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        supportActionBar?.hide();// Hide ActionBar
         setContentView(R.layout.activity_result_of_search_area)
 
         // Get the Intent that started this activity and extract the string
