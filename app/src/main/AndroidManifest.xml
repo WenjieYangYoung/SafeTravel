@@ -11,6 +11,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.OpenDataCoursework">
+        <meta-data android:name="com.here.sdk.access_key_id" android:value="Xj1LV5gp6oULj7q_h4BpHQ" />
+        <meta-data android:name="com.here.sdk.access_key_secret" android:value="4G1ZzNGKqLqNh6TmyHIjZT7_HQb9h4NOOCKu308kcyKNHH8ARBHQluR4OiRpxxmcv5BOnKa9PU5j57lr3RpMPA" />
         <activity
             android:name=".ResultNavigation"
             android:exported="false"

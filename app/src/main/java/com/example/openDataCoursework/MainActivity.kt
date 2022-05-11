@@ -18,6 +18,9 @@
  */
 package com.example.openDataCoursework
 
+
+import android.content.ContentValues.TAG
+import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
@@ -27,16 +30,38 @@ import android.widget.EditText
 import android.widget.TextView.OnEditorActionListener
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+
+import com.here.sdk.mapview.MapScheme
+import com.here.sdk.mapview.MapView
+import com.here.sdk.core.GeoCoordinates
+
+
 import com.example.openDataCoursework.PermissionsRequestor.ResultListener
 import com.here.sdk.core.engine.SDKBuildInformation
 import com.here.sdk.mapview.MapScheme
 import com.here.sdk.mapview.MapView
+
 
 const val EXTRA_MESSAGE = "com.example.openDataCoursework.MESSAGE"
 const val Origin = "com.example.openDataCoursework.Origin"
 const val Destination = "com.example.openDataCoursework.Destination"
 
 class MainActivity : AppCompatActivity() {
+
+
+    lateinit private var mapView: MapView;
+    lateinit private var routeExample: Routing;
+
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main);
+        mapView = findViewById(R.id.map_view);
+        mapView.onCreate(savedInstanceState);
+        loadMapScene();
+
+
+
     private var permissionsRequestor: PermissionsRequestor? = null
     private var mapView: MapView? = null
     private var searchExample: SearchExample? = null
@@ -60,6 +85,15 @@ class MainActivity : AppCompatActivity() {
         origin.inputType = EditorInfo.TYPE_CLASS_TEXT
         //设置单行输入，不然回车【搜索】会换行
         // Set single line input, otherwise, the “Enter” key will realize the line feed function
+
+        editText.isSingleLine = true
+        // Define search function
+        fun search() {
+
+            val searchContext: String = editText.text.toString()
+            if (TextUtils.isEmpty(searchContext)) {
+                Toast.makeText(this, "The input box is empty, please enter", Toast.LENGTH_SHORT).show()
+
         destination.isSingleLine = true
         var searchContextOrigin: String? = null
         // Define the Obtain function
@@ -75,6 +109,7 @@ class MainActivity : AppCompatActivity() {
             val searchContextDestination: String = destination.text.toString()
             if (TextUtils.isEmpty(searchContextDestination) || TextUtils.isEmpty(searchContextOrigin)) {
                 Toast.makeText(this, "Please enter the Origin and Destination", Toast.LENGTH_SHORT).show()
+
             } else {
 //             Here we should input the API that we use to use the map to search the data
 //             Here is an example you can check
@@ -101,6 +136,24 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+    /** Called when the user taps the Send button */
+    fun Navigation(view: View) {
+        // Do something in response to button
+        val intent = Intent(this, NavigationFunction::class.java)
+        startActivity(intent)
+
     private fun handleAndroidPermissions() {
         permissionsRequestor = PermissionsRequestor(this)
         permissionsRequestor!!.request(object : ResultListener {
@@ -112,6 +165,7 @@ class MainActivity : AppCompatActivity() {
                 Log.e(TAG, "Permissions denied by user.")
             }
         })
+
     }
 
     override fun onRequestPermissionsResult(
@@ -136,6 +190,32 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun loadMapScene() {
+        mapView.mapScene.loadScene(
+            MapScheme.NORMAL_DAY
+        ) { mapError ->
+            if (mapError == null) {
+                routeExample = Routing(this@MainActivity, mapView)
+               // routeExample.setEnd(coord)
+               // routeExample.setStart(coord)
+            } else {
+                Log.d(TAG, "Loading map failed: mapErrorCode: " + mapError.name)
+            }
+        }
+    }
+    fun changeStartPoint(coord: GeoCoordinates?){
+        routeExample.setStart(coord);
+    }
+    fun changeEnd(coord: GeoCoordinates?){
+        routeExample.setEnd(coord);
+    }
+    fun addExampleRoute(view: View?) {
+        routeExample.addExampleRoute()
+    }
+    override fun onPause() {
+        super.onPause()
+        mapView.onPause()
+
     fun searchExampleButtonClicked(view: View?) {
         searchExample!!.onSearchButtonClicked()
     }
@@ -155,11 +235,14 @@ class MainActivity : AppCompatActivity() {
     override fun onPause() {
         super.onPause()
         mapView!!.onPause()
+
     }
 
     override fun onResume() {
         super.onResume()
+
         mapView!!.onResume()
+
     }
 
     override fun onDestroy() {
@@ -189,3 +272,4 @@ class MainActivity : AppCompatActivity() {
 //        startActivity(intent)
 //    }
     }
+
