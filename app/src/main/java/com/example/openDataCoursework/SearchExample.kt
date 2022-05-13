@@ -36,7 +36,7 @@ class SearchExample(private val context: Context, private val mapView: MapView) 
     private lateinit var routeExample: Routing
     private var camera: MapCamera
     private val mapMarkerList: MutableList<MapMarker> = ArrayList()
-    private val originList: MutableList<GeoCoordinates> = ArrayList()
+    val originList: MutableList<GeoCoordinates> = ArrayList()
     private val destinationList: MutableList<GeoCoordinates> = ArrayList()
     private var searchEngine: SearchEngine? = null
 
@@ -105,8 +105,11 @@ class SearchExample(private val context: Context, private val mapView: MapView) 
         }
     }
 
+    @JvmName("getOriginList1")
     public fun getOriginList(): MutableList<GeoCoordinates> {
-        return originList;
+        System.out.println("here origin")
+        System.out.println(originList)
+        return this.originList;
     }
 
     public fun getDestinationList(): MutableList<GeoCoordinates> {
@@ -362,9 +365,10 @@ class SearchExample(private val context: Context, private val mapView: MapView) 
                     LOG_TAG,
                     "GeocodingResult: $locationDetails"
                 )
-//                camera.lookAt(originCoordinates, (1000 * 7).toDouble())
-                addOriginMarker(originCoordinates)
                 originList.add(originCoordinates)
+                addOriginMarker(originCoordinates)
+
+
             }
             Log.i("Origin result", "Size: " + list.size)
         }

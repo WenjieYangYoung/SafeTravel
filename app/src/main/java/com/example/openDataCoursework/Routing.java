@@ -32,6 +32,7 @@ import com.here.sdk.routing.IsolineCalculationMode;
 import com.here.sdk.routing.IsolineOptions;
 import com.here.sdk.routing.IsolineRangeType;
 import com.here.sdk.routing.OptimizationMode;
+import com.here.sdk.routing.PedestrianOptions;
 import com.here.sdk.routing.PostAction;
 import com.here.sdk.routing.Route;
 import com.here.sdk.routing.RoutingEngine;
@@ -59,10 +60,11 @@ public class Routing {
     private final List<MapPolyline> mapPolylines = new ArrayList<>();
     private final List<MapPolygon> mapPolygons = new ArrayList<>();
 
+
     private final RoutingEngine routingEngine;
     private final SearchEngine searchEngine;
-    private GeoCoordinates startGeoCoordinates;
-    private GeoCoordinates destinationGeoCoordinates;
+    public GeoCoordinates startGeoCoordinates;
+    public GeoCoordinates destinationGeoCoordinates;
     private final List<String> chargingStationsIDs = new ArrayList<>();
     public Routing(Context context,MapView mapView){
         this.context = context;
@@ -96,7 +98,7 @@ public class Routing {
         List<Waypoint> waypoints =
                 new ArrayList<>(Arrays.asList(startWaypoint, destinationWaypoint));
 
-        routingEngine.calculateRoute(waypoints, getEVCarOptions(), new CalculateRouteCallback() {
+        routingEngine.calculateRoute(waypoints, new PedestrianOptions(), new CalculateRouteCallback() {
             @Override
             public void onRouteCalculated(RoutingError routingError, List<Route> list) {
                 if (routingError != null) {
@@ -111,43 +113,6 @@ public class Routing {
             }
         });
     }
-    private EVCarOptions getEVCarOptions()  {
-        EVCarOptions evCarOptions = new EVCarOptions();
-
-        // The below three options are the minimum you must specify or routing will result in an error.
-        evCarOptions.consumptionModel.ascentConsumptionInWattHoursPerMeter = 9;
-        evCarOptions.consumptionModel.descentRecoveryInWattHoursPerMeter = 4.3;
-        evCarOptions.consumptionModel.freeFlowSpeedTable = new HashMap<Integer, Double>() {{
-            put(0, 0.239);
-            put(27, 0.239);
-            put(60, 0.196);
-            put(90, 0.238);
-        }};
-
-        // Ensure that the vehicle does not run out of energy along the way and charging stations are added as additional waypoints.
-        evCarOptions.ensureReachability = true;
-
-        // The below options are required when setting the ensureReachability option to true.
-        evCarOptions.routeOptions.optimizationMode = OptimizationMode.FASTEST;
-        evCarOptions.routeOptions.alternatives = 0;
-        evCarOptions.batterySpecifications.connectorTypes =
-                new ArrayList<>(Arrays.asList(ChargingConnectorType.TESLA,
-                        ChargingConnectorType.IEC_62196_TYPE_1_COMBO, ChargingConnectorType.IEC_62196_TYPE_2_COMBO));
-        evCarOptions.batterySpecifications.totalCapacityInKilowattHours = 80.0;
-        evCarOptions.batterySpecifications.initialChargeInKilowattHours = 10.0;
-        evCarOptions.batterySpecifications.targetChargeInKilowattHours = 72.0;
-        evCarOptions.batterySpecifications.chargingCurve = new HashMap<Double, Double>() {{
-            put(0.0, 239.0);
-            put(64.0, 111.0);
-            put(72.0, 1.0);
-        }};
-
-        // Note: More EV options are availeble, the above shows only the minimum viable options.
-
-        return evCarOptions;
-    }
-
-
 
     // A route may contain several warnings, for example, when a certain route option could not be fulfilled.
     // An implementation may decide to reject a route if one or more violations are detected.
@@ -181,7 +146,7 @@ public class Routing {
 
         // Draw a circle to indicate starting point and destination.
         addCircleMapMarker(startPoint, R.drawable.green_dot);
-        addCircleMapMarker(destination, R.drawable.green_dot);
+        addCircleMapMarker(destination, R.drawable.origin);
     }
     public void clearMap() {
         clearWaypointMapMarker();

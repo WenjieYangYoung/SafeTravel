@@ -18,8 +18,6 @@
  */
 package com.example.openDataCoursework
 
-import android.content.ContentValues.TAG
-import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
@@ -29,11 +27,11 @@ import android.widget.EditText
 import android.widget.TextView.OnEditorActionListener
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.openDataCoursework.PermissionsRequestor.ResultListener
+import com.here.sdk.core.GeoCoordinates
+import com.here.sdk.core.engine.SDKBuildInformation
 import com.here.sdk.mapview.MapScheme
 import com.here.sdk.mapview.MapView
-import com.here.sdk.core.GeoCoordinates
-import com.example.openDataCoursework.PermissionsRequestor.ResultListener
-import com.here.sdk.core.engine.SDKBuildInformation
 
 
 const val EXTRA_MESSAGE = "com.example.openDataCoursework.MESSAGE"
@@ -45,7 +43,11 @@ class MainActivity : AppCompatActivity() {
         private lateinit var routeExample: Routing
         private lateinit var permissionsRequestor: PermissionsRequestor
         private lateinit var mapView: MapView
-        private lateinit var searchExample: SearchExample
+       // private lateinit var searchExample: SearchExample
+       var originList: MutableList<GeoCoordinates> = ArrayList()
+         var destinationList: MutableList<GeoCoordinates> = ArrayList()
+
+        private lateinit var searchExampleJava: SearchExampleJava
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -76,6 +78,9 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(this, "Please enter the Origin", Toast.LENGTH_SHORT).show()
             }
         }
+
+
+
         // Define the Search function
         fun search(searchContextOrigin: String) {
             val searchContextDestination: String = destination.text.toString()
@@ -84,8 +89,16 @@ class MainActivity : AppCompatActivity() {
             } else {
 //             Here we should input the API that we use to use the map to search the data
 //             Here is an example you can check
-                searchExample.originClicked(searchContextOrigin)
-                searchExample.destinationClicked(searchContextDestination)
+                searchExampleJava.onGeocodeButtonClicked(searchContextOrigin,"start")
+                searchExampleJava.onGeocodeButtonClicked(searchContextDestination,"end")
+
+
+                //System.out.println(destinationList.get(0))
+//                routeExample.setStart(originList.get(0))
+//                val desinationList= searchExample.getDestinationList()
+//                routeExample.setEnd(desinationList.get(0))
+//                routeExample.addExampleRoute()
+
 //                val intent = Intent(this, ResultNavigation::class.java).apply {
 //                    putExtra(Origin, searchContextOrigin)
 //                    putExtra(Destination, searchContextDestination)
@@ -106,10 +119,10 @@ class MainActivity : AppCompatActivity() {
             false
         })
 
-        var originList = searchExample.getOriginList()
-        changeStartPoint(originList[0])
-        var destinationList = searchExample.getDestinationList()
-        changeEnd(destinationList[0])
+
+
+
+
 
     }
             private fun handleAndroidPermissions() {
@@ -141,7 +154,8 @@ class MainActivity : AppCompatActivity() {
                 ) { mapError ->
                     if (mapError == null) {
                         routeExample = Routing(this@MainActivity, mapView)
-                        searchExample = SearchExample(this@MainActivity, mapView!!)
+                        //searchExample = SearchExample(this@MainActivity, mapView!!)
+                        searchExampleJava = SearchExampleJava(this@MainActivity, mapView!!)
                         // routeExample.setEnd(coord)
                         // routeExample.setStart(coord)
                     } else {
@@ -159,16 +173,22 @@ class MainActivity : AppCompatActivity() {
             }
 
             fun addExampleRoute(view: View?) {
+                originList= searchExampleJava.getOriginList()
+                destinationList=searchExampleJava.getDestinationList();
+                for (item: GeoCoordinates in destinationList) {
+                    System.out.println(item.latitude)
+                    System.out.println(item.longitude)
+                    System.out.println("here")
+                }
+                routeExample.setStart(originList.get(0))
+                routeExample.setEnd(destinationList.get(0))
+
                 routeExample.addExampleRoute()
             }
-
-            fun searchExampleButtonClicked(view: View?) {
-                searchExample.onSearchButtonClicked()
+            fun clearMap(){
+                routeExample.clearMap()
             }
 
-            fun geocodeAnAddressButtonClicked(view: View?) {
-                searchExample.onGeocodeButtonClicked()
-            }
 
 //    fun originSearchAchieve(origin: String?) {
 //        searchExample!!.originClicked(origin)
@@ -200,7 +220,7 @@ class MainActivity : AppCompatActivity() {
             /** Called when the user taps the Send button */
             fun clear(view: View) {
                 //FAB
-                searchExample.clearMap()
+                searchExampleJava.clearMap()
             }
 
 //    fun Marked(view: View) {
