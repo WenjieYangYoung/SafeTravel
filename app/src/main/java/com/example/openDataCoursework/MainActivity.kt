@@ -76,7 +76,7 @@ class MainActivity : AppCompatActivity() {
                 // Obtain the self positioning coordinate and show in map
                 searchExampleJava.findSelfPosition(location.latitude, location.longitude)
                 selfPositionCoordinate = GeoCoordinates(location.latitude, location.longitude)
-                locationManager!!.removeUpdates(locationListener as LocationListener);
+//                locationManager!!.removeUpdates(locationListener as LocationListener);
             }
             override fun onStatusChanged(s: String, i: Int, bundle: Bundle) {}
             override fun onProviderEnabled(s: String) {}
