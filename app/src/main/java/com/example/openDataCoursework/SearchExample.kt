@@ -479,6 +479,7 @@ class SearchExample(private val context: Context, private val mapView: MapView) 
         builder.show()
     }
 
+
     companion object {
         private val LOG_TAG = SearchExample::class.java.name
     }

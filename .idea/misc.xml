@@ -13,7 +13,7 @@
         <entry key="..\:/Comp6239_Mobile_Application/OpenDataCoursework/app/src/main/res/layout-w936dp/activity_login.xml" value="0.190234375" />
         <entry key="..\:/Comp6239_Mobile_Application/OpenDataCoursework/app/src/main/res/layout/activity_display_message.xml" value="0.2" />
         <entry key="..\:/Comp6239_Mobile_Application/OpenDataCoursework/app/src/main/res/layout/activity_login.xml" value="0.190234375" />
-        <entry key="..\:/Comp6239_Mobile_Application/OpenDataCoursework/app/src/main/res/layout/activity_main.xml" value="0.279296875" />
+        <entry key="..\:/Comp6239_Mobile_Application/OpenDataCoursework/app/src/main/res/layout/activity_main.xml" value="0.2" />
         <entry key="..\:/Comp6239_Mobile_Application/OpenDataCoursework/app/src/main/res/layout/activity_main2.xml" value="0.190234375" />
         <entry key="..\:/Comp6239_Mobile_Application/OpenDataCoursework/app/src/main/res/layout/activity_marked.xml" value="0.190234375" />
         <entry key="..\:/Comp6239_Mobile_Application/OpenDataCoursework/app/src/main/res/layout/activity_navigation.xml" value="0.190234375" />
@@ -26,7 +26,9 @@
         <entry key="..\:/Comp6239_Mobile_Application/OpenDataCoursework/app/src/main/res/layout/fragment_dashboard.xml" value="0.190234375" />
         <entry key="..\:/Comp6239_Mobile_Application/OpenDataCoursework/app/src/main/res/layout/fragment_home.xml" value="0.190234375" />
         <entry key="..\:/Comp6239_Mobile_Application/OpenDataCoursework/app/src/main/res/layout/fragment_notifications.xml" value="0.190234375" />
+        <entry key="..\:/Comp6239_Mobile_Application/OpenDataCoursework/app/src/main/res/layout/gps.xml" value="0.1375" />
         <entry key="..\:/Comp6239_Mobile_Application/OpenDataCoursework/app/src/main/res/layout/map_test.xml" value="0.13359375" />
+        <entry key="..\:/Comp6239_Mobile_Application/OpenDataCoursework/app/src/main/res/layout/search_and_route_map.xml" value="0.157421875" />
         <entry key="..\:/Comp6239_Mobile_Application/OpenDataCoursework/app/src/main/res/layout/search_main.xml" value="0.141015625" />
         <entry key="..\:/Comp6239_Mobile_Application/OpenDataCoursework/app/src/main/res/layout/settings_activity.xml" value="0.190234375" />
         <entry key="..\:/Comp6239_Mobile_Application/OpenDataCoursework/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.1825" />

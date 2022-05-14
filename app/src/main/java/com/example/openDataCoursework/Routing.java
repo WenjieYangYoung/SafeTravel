@@ -146,7 +146,7 @@ public class Routing {
 
         // Draw a circle to indicate starting point and destination.
         addCircleMapMarker(startPoint, R.drawable.green_dot);
-        addCircleMapMarker(destination, R.drawable.origin);
+        addCircleMapMarker(destination, R.drawable.select);
     }
     public void clearMap() {
         clearWaypointMapMarker();

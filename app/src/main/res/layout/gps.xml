@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--activity_main.xml是一个在res/layout目录下的layout文件。
+当应用程序构建它的界面时被引用。你将非常频繁的修改这个文件来改变应用程序的布局。-->
+<!--TextView是一个Android的控件用于构建用户图形界面。
+它包含有许多不同的属性，诸如android:layout_width, android:layout_height等用来设置它的宽度和高度等。
+@string指的是res/values文件夹下的strings.xml文件-->
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:onClick="clear"
+    tools:context=".MainActivity">
+
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_margin="16dp"
+        android:contentDescription="@string/submit"
+        android:onClick="clear"
+        android:src="@drawable/poi"
+        app:backgroundTint="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

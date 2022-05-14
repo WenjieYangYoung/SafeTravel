@@ -60,7 +60,7 @@ public class SearchExampleJava {
 
     private final Context context;
     private final MapView mapView;
-    private final MapCamera camera;
+    public final MapCamera camera;
     public ArrayList<GeoCoordinates> originList= new ArrayList<>();
     public ArrayList<GeoCoordinates> destinationList= new ArrayList<>();
     private final List<MapMarker> mapMarkerList = new ArrayList<>();
@@ -115,17 +115,13 @@ public class SearchExampleJava {
         Toast.makeText(context,"Searching in viewport: " + searchTerm, Toast.LENGTH_LONG).show();
         searchInViewport(searchTerm);
     }
-
+    // Search the coordinate trough the input text, step 1
     private void geocodeAnAddress(String address,String type) {
         // Set map to expected location.
         GeoCoordinates geoCoordinates = new GeoCoordinates(50.909698, 	-1.404351);
         //camera.lookAt(geoCoordinates, 1000 * 7);
-
         String queryString = address;
-
-        Toast.makeText(context,"Finding locations for: " + queryString
-                + ". Tap marker to see the coordinates. Check the logs for the address.", Toast.LENGTH_LONG).show();
-
+        Toast.makeText(context, "Tap marker to choose start point and destination", Toast.LENGTH_LONG).show();
         geocodeAddressAtLocation(queryString, geoCoordinates,type);
     }
 
@@ -193,7 +189,6 @@ public class SearchExampleJava {
                         return;
                     }
                 }
-
                 showDialog("Picked Map Marker",
                         "Geographic coordinates: " +
                                 topmostMapMarker.getCoordinates().latitude + ", " +
@@ -255,7 +250,6 @@ public class SearchExampleJava {
         @Override
         public void onSuggestCompleted(@Nullable SearchError searchError, @Nullable List<Suggestion> list) {
             if (searchError != null) {
-               // Log.d(LOG_TAG, "Autosuggest Error: " + searchError.name());
                 return;
             }
 
@@ -268,8 +262,6 @@ public class SearchExampleJava {
                 if (place != null) {
                     addressText = place.getAddress().addressText;
                 }
-
-               // Log.d(LOG_TAG, "Autosuggest result: " + autosuggestResult.getTitle() +" addressText: " + addressText);
             }
         }
     };
@@ -300,18 +292,15 @@ public class SearchExampleJava {
                 searchOptions,
                 autosuggestCallback);
     }
-
+    // Search the coordinate trough the input text, step 2
     private void geocodeAddressAtLocation(String queryString, GeoCoordinates geoCoordinates,String type) {
-
-
+        // Search the coordinate through the input text
         TextQuery query = new TextQuery(queryString, geoCoordinates);
-
         SearchOptions options = new SearchOptions();
         options.languageCode = LanguageCode.EN_GB;
-
         if(type.equals("start")){
             options.maxItems = 2;
-            //clearMap();
+            clearMap();
             searchEngine.search(query, options, geocodeAddressSearchCallbackStart);
         }else if (type.equals("end")){
             options.maxItems = 2;
@@ -319,58 +308,64 @@ public class SearchExampleJava {
         }
 
     }
-
+    // Search the coordinate trough the input text, step 3
     private final SearchCallback geocodeAddressSearchCallbackStart = new SearchCallback() {
         @Override
         public void onSearchCompleted(SearchError searchError, List<Place> list) {
             if (searchError != null) {
-                showDialog("Geocoding", "Error: " + searchError.toString());
+//                showDialog("Geocoding", "Error: " + searchError.toString());
                 return;
             }
             GeoCoordinates geoCoordinates = null;
+            originList.clear();
             for (Place geocodingResult : list) {
                 // Note: getGeoCoordinates() may return null only for Suggestions.
                  geoCoordinates = geocodingResult.getGeoCoordinates();
-               
-
                 Address address = geocodingResult.getAddress();
+                assert geoCoordinates != null;
                 String locationDetails = address.addressText
                         + ". GeoCoordinates: " + geoCoordinates.latitude
                         + ", " + geoCoordinates.longitude;
-
-                //Log.d(LOG_TAG, "GeocodingResult: " + locationDetails);
-
+                addStartMapMarker(geoCoordinates);
+                originList.add(geoCoordinates);
             }
-            addPoiMapMarker(geoCoordinates);
-            originList.add(geoCoordinates);
-            //showDialog("Geocoding result","Size: " + list.size());
         }
     };
+
     private final SearchCallback geocodeAddressSearchCallbackEnd = new SearchCallback() {
         @Override
         public void onSearchCompleted(SearchError searchError, List<Place> list) {
             if (searchError != null) {
-                showDialog("Geocoding", "Error: " + searchError.toString());
+//                showDialog("Geocoding", "Error: " + searchError.toString());
                 return;
             }
             GeoCoordinates geoCoordinates = null;
+            destinationList.clear();
             for (Place geocodingResult : list) {
                 // Note: getGeoCoordinates() may return null only for Suggestions.
                 geoCoordinates = geocodingResult.getGeoCoordinates();
-                
                 Address address = geocodingResult.getAddress();
+                assert geoCoordinates != null;
                 String locationDetails = address.addressText
                         + ". GeoCoordinates: " + geoCoordinates.latitude
                         + ", " + geoCoordinates.longitude;
-
-                Log.d(LOG_TAG, "GeocodingResult: " + locationDetails);
-
+                addEndMapMarker(geoCoordinates);
+                destinationList.add(geoCoordinates);
             }
-            createPoiMapMarkerEnd(geoCoordinates);
-            destinationList.add(geoCoordinates);
-           // showDialog("Geocoding result","Size: " + list.size());
         }
     };
+
+    private void addStartMapMarker(GeoCoordinates geoCoordinates) {
+        MapMarker mapMarker = createPoiMapMarker(geoCoordinates);
+        mapView.getMapScene().addMapMarker(mapMarker);
+        mapMarkerList.add(mapMarker);
+    }
+
+    private void addEndMapMarker(GeoCoordinates geoCoordinates) {
+        MapMarker mapMarker = createPoiMapMarkerEnd(geoCoordinates);
+        mapView.getMapScene().addMapMarker(mapMarker);
+        mapMarkerList.add(mapMarker);
+    }
 
     private void addPoiMapMarker(GeoCoordinates geoCoordinates) {
         MapMarker mapMarker = createPoiMapMarker(geoCoordinates);
@@ -386,7 +381,7 @@ public class SearchExampleJava {
     }
 
     private MapMarker createPoiMapMarker(GeoCoordinates geoCoordinates) {
-        MapImage mapImage = MapImageFactory.fromResource(context.getResources(), R.drawable.poi);
+        MapImage mapImage = MapImageFactory.fromResource(context.getResources(), R.drawable.origin);
         return new MapMarker(geoCoordinates, mapImage, new Anchor2D(0.5F, 1));
     }
     private MapMarker createPoiMapMarkerEnd(GeoCoordinates geoCoordinates) {
@@ -429,4 +424,11 @@ public class SearchExampleJava {
         builder.setMessage(message);
         builder.show();
     }
+
+    public void findSelfPosition (double var1, double var2){
+        double distanceInMeters = 1000 * 10;
+        camera.lookAt(new GeoCoordinates(var1, 	var2), distanceInMeters);
+        addStartMapMarker(new GeoCoordinates(var1, 	var2));
+    }
+
 }

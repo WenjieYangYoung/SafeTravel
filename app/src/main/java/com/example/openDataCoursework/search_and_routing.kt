@@ -18,30 +18,39 @@
  */
 package com.example.openDataCoursework
 
-import android.util.Log
-import com.here.sdk.core.engine.SDKBuildInformation
-import com.here.sdk.mapview.MapScheme
-import com.here.sdk.mapview.MapView
-import com.example.openDataCoursework.PermissionsRequestor.ResultListener
-import android.content.Intent
+import android.location.LocationManager
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.TextView.OnEditorActionListener
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.material.snackbar.Snackbar
+import com.example.openDataCoursework.PermissionsRequestor.ResultListener
+import com.here.sdk.core.GeoCoordinates
+import com.here.sdk.core.LocationListener
+import com.here.sdk.core.engine.SDKBuildInformation
+import com.here.sdk.mapview.MapScheme
+import com.here.sdk.mapview.MapView
+
 
 //const val EXTRA_MESSAGE = "com.example.openDataCoursework.MESSAGE"
 //const val Origin = "com.example.openDataCoursework.Origin"
 //const val Destination = "com.example.openDataCoursework.Destination"
 
-class searchMain : AppCompatActivity() {
-    private var permissionsRequestor: PermissionsRequestor? = null
-    private var mapView: MapView? = null
-    private var searchExample: SearchExample? = null
+class search_and_routing : AppCompatActivity() {
+
+    private lateinit var routeExample: Routing
+    private lateinit var permissionsRequestor: PermissionsRequestor
+    private lateinit var mapView: MapView
+    // private lateinit var searchExample: SearchExample
+    var originList: MutableList<GeoCoordinates> = ArrayList()
+    var destinationList: MutableList<GeoCoordinates> = ArrayList()
+
+    private lateinit var searchExampleJava: SearchExampleJava
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         supportActionBar?.hide();// Hide ActionBar
@@ -49,7 +58,7 @@ class searchMain : AppCompatActivity() {
         Log.d("", "HERE SDK version: " + SDKBuildInformation.sdkVersion().versionName)
         // Get a MapView instance from layout.
         mapView = findViewById(R.id.map_view)
-        mapView!!.onCreate(savedInstanceState)
+        mapView.onCreate(savedInstanceState)
         handleAndroidPermissions()
         // These functions below need be set in the onCreat() function, important !!!
         // Otherwise, they do not work
@@ -72,6 +81,8 @@ class searchMain : AppCompatActivity() {
             }
         }
 
+
+
         // Define the Search function
         fun search(searchContextOrigin: String) {
             val searchContextDestination: String = destination.text.toString()
@@ -80,13 +91,16 @@ class searchMain : AppCompatActivity() {
             } else {
 //             Here we should input the API that we use to use the map to search the data
 //             Here is an example you can check
-                originSearchAchieve(searchContextOrigin)
-                destinationSearchAchieve(searchContextDestination)
-//                val intent = Intent(this, ResultNavigation::class.java).apply {
-//                    putExtra(Origin, searchContextOrigin)
-//                    putExtra(Destination, searchContextDestination)
-//                }
-//                startActivity(intent)
+                searchExampleJava.onGeocodeButtonClicked(searchContextOrigin,"start")
+                searchExampleJava.onGeocodeButtonClicked(searchContextDestination,"end")
+
+
+                //System.out.println(destinationList.get(0))
+//                routeExample.setStart(originList.get(0))
+//                val desinationList= searchExample.getDestinationList()
+//                routeExample.setEnd(desinationList.get(0))
+//                routeExample.addExampleRoute()
+
             }
         }
         //添加imeOptions的监听
@@ -101,18 +115,16 @@ class searchMain : AppCompatActivity() {
             obtain()
             false
         })
-        //浮动按钮
-        val fab: View = findViewById(R.id.fab)
-        fab.setOnClickListener { v ->
-            Snackbar.make(v, "Here's a Snackbar", Snackbar.LENGTH_LONG)
-                .setAction("Action", null)
-                .show()
-        }
-    }
 
+
+
+
+
+
+    }
     private fun handleAndroidPermissions() {
         permissionsRequestor = PermissionsRequestor(this)
-        permissionsRequestor!!.request(object : ResultListener {
+        permissionsRequestor.request(object : ResultListener {
             override fun permissionsGranted() {
                 loadMapScene()
             }
@@ -121,6 +133,7 @@ class searchMain : AppCompatActivity() {
                 Log.e(TAG, "Permissions denied by user.")
             }
         })
+
     }
 
     override fun onRequestPermissionsResult(
@@ -129,63 +142,83 @@ class searchMain : AppCompatActivity() {
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        permissionsRequestor!!.onRequestPermissionsResult(requestCode, grantResults)
+        permissionsRequestor.onRequestPermissionsResult(requestCode, grantResults)
     }
 
     private fun loadMapScene() {
-        // Load a scene from the HERE SDK to render the map with a map scheme.
-        mapView!!.mapScene.loadScene(
+        mapView.mapScene.loadScene(
             MapScheme.NORMAL_DAY
         ) { mapError ->
             if (mapError == null) {
-                searchExample = SearchExample(this, mapView!!)
+                routeExample = Routing(this, mapView)
+                //searchExample = SearchExample(this@MainActivity, mapView!!)
+                searchExampleJava = SearchExampleJava(this, mapView!!)
+                // routeExample.setEnd(coord)
+                // routeExample.setStart(coord)
             } else {
-                Log.d(TAG, "onLoadScene failed: $mapError")
+                Log.d(TAG, "Loading map failed: mapErrorCode: " + mapError.name)
             }
         }
     }
 
-    fun searchExampleButtonClicked(view: View?) {
-        searchExample!!.onSearchButtonClicked()
+    fun changeStartPoint(coord: GeoCoordinates?) {
+        routeExample.setStart(coord);
     }
 
-    fun geocodeAnAddressButtonClicked(view: View?) {
-        searchExample!!.onGeocodeButtonClicked()
+    fun changeEnd(coord: GeoCoordinates?) {
+        routeExample.setEnd(coord);
     }
 
-    fun originSearchAchieve(origin: String?) {
-        searchExample!!.originClicked(origin)
+    fun addExampleRoute(view: View?) {
+        originList= searchExampleJava.getOriginList()
+        destinationList=searchExampleJava.getDestinationList();
+        for (item: GeoCoordinates in destinationList) {
+            System.out.println(item.latitude)
+            System.out.println(item.longitude)
+            System.out.println("here")
+        }
+        routeExample.setStart(originList.get(0))
+        routeExample.setEnd(destinationList.get(0))
+
+        routeExample.addExampleRoute()
+    }
+    fun clear(view: View) {
+        //FAB
+        searchExampleJava.clearMap()
+        routeExample.clearMap()
     }
 
-    fun destinationSearchAchieve(destination: String?) {
-        searchExample!!.destinationClicked(destination)
-    }
+
+
+//    fun originSearchAchieve(origin: String?) {
+//        searchExample!!.originClicked(origin)
+//    }
+//
+//    fun destinationSearchAchieve(destination: String?) {
+//        searchExample!!.destinationClicked(destination)
+//    }
 
     override fun onPause() {
         super.onPause()
-        mapView!!.onPause()
+        mapView.onPause()
     }
 
     override fun onResume() {
         super.onResume()
-        mapView!!.onResume()
+        mapView.onResume()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        mapView!!.onDestroy()
+        mapView.onDestroy()
     }
 
     companion object {
-        private val TAG = searchMain::class.java.simpleName
+        private val TAG = search_and_routing::class.java.simpleName
     }
 
     /** Called when the user taps the Send button */
-//    fun Navigation(view: View) {
-//        // Do something in response to button
-//        val intent = Intent(this, NavigationFunction::class.java)
-//        startActivity(intent)
-//    }
+
 //    fun Marked(view: View) {
 //        // Do something in response to button
 //        val intent = Intent(this, Marked::class.java)
@@ -197,3 +230,4 @@ class searchMain : AppCompatActivity() {
 //        startActivity(intent)
 //    }
 }
+
