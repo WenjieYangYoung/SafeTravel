@@ -93,7 +93,6 @@
         android:layout_gravity="center_vertical"
         android:layout_margin="16dp"
         android:contentDescription="@string/submit"
-        android:onClick="clear"
         android:src="@drawable/positioning"
         app:backgroundTint="@color/white"
         app:layout_constraintBottom_toBottomOf="@+id/map_view"
