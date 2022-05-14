@@ -54,5 +54,16 @@ public class DatabaseAccess {
         return buffer.toString();
     }
 
+    public String getCrimeTypebyCoordinate(Float longitude, Float latitude) {
+        c = db.rawQuery("select Crimetype from crimet where Longitude = '"+longitude+"' and Latitude = '"+latitude+"'", new String[]{});
+        StringBuffer buffer = new StringBuffer();
+        while(c.moveToNext()){
+            String crimeType = c.getString(0);
+            buffer.append(""+crimeType);
+
+        }
+        return buffer.toString();
+    }
+
 
 }
