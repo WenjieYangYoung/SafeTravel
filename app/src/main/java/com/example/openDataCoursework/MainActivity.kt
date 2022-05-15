@@ -39,6 +39,7 @@ import com.android.volley.RequestQueue
 import com.android.volley.toolbox.Volley
 import com.example.openDataCoursework.PermissionsRequestor.ResultListener
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.here.sdk.core.Color
 import com.here.sdk.core.GeoCoordinates
 import com.here.sdk.mapview.MapScheme
 import com.here.sdk.mapview.MapView
@@ -60,9 +61,11 @@ class MainActivity : AppCompatActivity() {
     private var locationListener: android.location.LocationListener? = null
     private lateinit var searchExampleJava: SearchExampleJava
     private var selfPositionCoordinate: GeoCoordinates? = null
-    var queue: RequestQueue? =null;
-    private var databaseAccess:DatabaseAccess?=null;
+    var queue: RequestQueue? = null;
+    private var databaseAccess: DatabaseAccess? = null;
+    private var databaseAccess2: DatabaseAccess2? = null;
     var crimeList = java.util.ArrayList<Crime>()
+    var listAreaPoly = java.util.ArrayList<java.util.ArrayList<GeoCoordinates>>()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -78,7 +81,8 @@ class MainActivity : AppCompatActivity() {
         //createAPI()
         button = findViewById<View>(R.id.fab2) as FloatingActionButton
         locationManager = getSystemService(LOCATION_SERVICE) as LocationManager
-        databaseAccess = DatabaseAccess.getInstance(applicationContext)
+        databaseAccess = DatabaseAccess.getInstance(applicationContext);
+        databaseAccess2= DatabaseAccess2.getInstance(applicationContext);
         createMarkers()
 
         locationListener = object : android.location.LocationListener {
@@ -88,6 +92,7 @@ class MainActivity : AppCompatActivity() {
                 selfPositionCoordinate = GeoCoordinates(location.latitude, location.longitude)
                 locationManager!!.removeUpdates(locationListener as LocationListener);
             }
+
             override fun onStatusChanged(s: String, i: Int, bundle: Bundle) {}
             override fun onProviderEnabled(s: String) {}
             override fun onProviderDisabled(s: String) {
@@ -108,7 +113,9 @@ class MainActivity : AppCompatActivity() {
                 ), 10
             )
             return
-        } else { configureButton() }
+        } else {
+            configureButton()
+        }
 
         // These functions below need be set in the onCreat() function, important !!!
         // Otherwise, they do not work
@@ -123,6 +130,7 @@ class MainActivity : AppCompatActivity() {
         // Set single line input, otherwise, the “Enter” key will realize the line feed function
         destination.isSingleLine = true
         var searchContextOrigin: String? = null
+
         // Define the Obtain function
         fun obtain() {
             searchContextOrigin = origin.text.toString()
@@ -130,6 +138,7 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(this, "Please enter the Origin", Toast.LENGTH_SHORT).show()
             }
         }
+
         // Define the Search function
         fun search(searchContextOrigin: String) {
             val searchContextDestination: String = destination.text.toString()
@@ -138,8 +147,8 @@ class MainActivity : AppCompatActivity() {
 //            } else {
 //             Here we should input the API that we use to use the map to search the data
 //             Here is an example you can check
-                searchExampleJava.onGeocodeButtonClicked(searchContextOrigin,"start")
-                searchExampleJava.onGeocodeButtonClicked(searchContextDestination,"end")
+            searchExampleJava.onGeocodeButtonClicked(searchContextOrigin, "start")
+            searchExampleJava.onGeocodeButtonClicked(searchContextDestination, "end")
 //            }
         }
         //添加imeOptions的监听
@@ -162,10 +171,21 @@ class MainActivity : AppCompatActivity() {
             override fun permissionsGranted() {
                 loadMapScene()
             }
+
             override fun permissionsDenied() {
                 Log.e(TAG, "Permissions denied by user.")
             }
         })
+    }
+
+    fun addRegions(view: View) {
+        databaseAccess2!!.open()
+        listAreaPoly=databaseAccess!!.getRegion()
+        val rate= databaseAccess2!!.getDangerRate()
+        routeExample.createPolygon(listAreaPoly,rate)
+
+
+
     }
 
     override fun onRequestPermissionsResult(
@@ -182,6 +202,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
     private fun configureButton() {
         button!!.setOnClickListener {
             if (ActivityCompat.checkSelfPermission(
@@ -216,16 +237,16 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
     fun addExampleRoute(view: View?) {
         routeExample.clearMap()
-        originList= searchExampleJava.getOriginList()
-       destinationList=searchExampleJava.getDestinationList();
+        originList = searchExampleJava.getOriginList()
+        destinationList = searchExampleJava.getDestinationList();
 
         if (!originList.isNullOrEmpty()) {
             routeExample.setStart(originList.get(0))
             routeExample.setEnd(destinationList.get(0))
-        }
-        else if (selfPositionCoordinate != null) {//try to use the self positioning coordinate, but the app crashed
+        } else if (selfPositionCoordinate != null) {//try to use the self positioning coordinate, but the app crashed
             routeExample.setStart(selfPositionCoordinate)
             routeExample.setEnd(destinationList.get(0))
         }
@@ -257,12 +278,12 @@ class MainActivity : AppCompatActivity() {
     companion object {
         private val TAG = search_and_routing::class.java.simpleName
     }
-    fun createMarkers(){
+
+    fun createMarkers() {
         databaseAccess?.open()
-        crimeList=databaseAccess!!.getCrimeType();
-        for(i in crimeList){
-            System.out.println(i.getName())
-        }
+        crimeList = databaseAccess!!.getCrimeType();
     }
 }
+
+
 

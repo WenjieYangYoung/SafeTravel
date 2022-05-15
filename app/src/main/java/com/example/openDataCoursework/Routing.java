@@ -212,6 +212,50 @@ public class Routing {
         builder.setMessage(message);
         builder.show();
     }
+    public void createPolygon(ArrayList<ArrayList<GeoCoordinates>> poligonlist,ArrayList<Integer> dangerRate) {
+        Color color;
+        for(int i=0;i<poligonlist.size();i++){
+            switch (dangerRate.get(i)){
+                case 1:
+                    color=  Color.valueOf(1.0f,0.4f,0.4f,0.5f);
+                    break;
+                case 2:
+                    color=  Color.valueOf(1.0f,0.2f,0.2f,0.5f);
+                    break;
+                case 3:
+                    color=  Color.valueOf(1.0f,0,0,0.5f);
+                    break;
+                case 4:
+                    color=  Color.valueOf(0.8f,0,0,0.5f);
+                    break;
+                case 5:
+                    color=  Color.valueOf(0.6f,0,0,0.5f);
+                    break;
+                default:
+                    color=  Color.valueOf(255,102,102,0);
+                    throw new IllegalStateException("Unexpected value: " + dangerRate.get(i));
+            }
+
+
+            showPolygon(poligonlist.get(i),color);
+        }
+
+
+    }
+    public void showPolygon(ArrayList<GeoCoordinates> poligonlist,Color color){
+        GeoPolygon geoPolygon;
+        try {
+            geoPolygon = new GeoPolygon(poligonlist);
+        } catch (InstantiationErrorException e) {
+            // Thrown when less than three vertices.
+            return ;
+        }
+
+        Color fillColor = color; // RGBA
+        MapPolygon mapPolygon = new MapPolygon(geoPolygon, fillColor);
+        mapPolygons.add(mapPolygon);
+        mapView.getMapScene().addMapPolygon(mapPolygon);
+    }
 
 
 }
