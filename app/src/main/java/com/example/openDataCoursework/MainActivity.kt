@@ -31,11 +31,12 @@ import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
-import android.widget.TextView
 import android.widget.TextView.OnEditorActionListener
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import com.android.volley.RequestQueue
+import com.android.volley.toolbox.Volley
 import com.example.openDataCoursework.PermissionsRequestor.ResultListener
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.here.sdk.core.GeoCoordinates
@@ -59,6 +60,10 @@ class MainActivity : AppCompatActivity() {
     private var locationListener: android.location.LocationListener? = null
     private lateinit var searchExampleJava: SearchExampleJava
     private var selfPositionCoordinate: GeoCoordinates? = null
+    var queue: RequestQueue? =null;
+    private var databaseAccess:DatabaseAccess?=null;
+    var crimeList = java.util.ArrayList<Crime>()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,8 +74,13 @@ class MainActivity : AppCompatActivity() {
         mapView.onCreate(savedInstanceState)
         handleAndroidPermissions()
         // Obtain the GPS position
+        queue = Volley.newRequestQueue(this)
+        //createAPI()
         button = findViewById<View>(R.id.fab2) as FloatingActionButton
         locationManager = getSystemService(LOCATION_SERVICE) as LocationManager
+        databaseAccess = DatabaseAccess.getInstance(applicationContext)
+        createMarkers()
+
         locationListener = object : android.location.LocationListener {
             override fun onLocationChanged(location: Location) {
                 // Obtain the self positioning coordinate and show in map
@@ -172,7 +182,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-
     private fun configureButton() {
         button!!.setOnClickListener {
             if (ActivityCompat.checkSelfPermission(
@@ -200,34 +209,17 @@ class MainActivity : AppCompatActivity() {
         ) { mapError ->
             if (mapError == null) {
                 routeExample = Routing(this, mapView)
-                //searchExample = SearchExample(this@MainActivity, mapView!!)
                 searchExampleJava = SearchExampleJava(this, mapView!!)
-                // routeExample.setEnd(coord)
-                // routeExample.setStart(coord)
+
             } else {
                 Log.d(TAG, "Loading map failed: mapErrorCode: " + mapError.name)
             }
         }
     }
-    fun changeStartPoint(coord: GeoCoordinates?) {
-        routeExample.setStart(coord);
-    }
-
-    fun changeEnd(coord: GeoCoordinates?) {
-        routeExample.setEnd(coord);
-    }
-
     fun addExampleRoute(view: View?) {
+        routeExample.clearMap()
         originList= searchExampleJava.getOriginList()
-        destinationList=searchExampleJava.getDestinationList();
-        for (item: GeoCoordinates in destinationList) {
-            System.out.println(item.latitude)
-            System.out.println(item.longitude)
-            System.out.println("here")
-        }
-
-//        routeExample.setStart(originList.get(0))
-//        routeExample.setEnd(destinationList.get(0))
+       destinationList=searchExampleJava.getDestinationList();
 
         if (!originList.isNullOrEmpty()) {
             routeExample.setStart(originList.get(0))
@@ -238,7 +230,7 @@ class MainActivity : AppCompatActivity() {
             routeExample.setEnd(destinationList.get(0))
         }
 
-        routeExample.addExampleRoute()
+        routeExample.addExampleRoute(crimeList)
     }
 
     fun clear(view: View) {
@@ -264,6 +256,13 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         private val TAG = search_and_routing::class.java.simpleName
+    }
+    fun createMarkers(){
+        databaseAccess?.open()
+        crimeList=databaseAccess!!.getCrimeType();
+        for(i in crimeList){
+            System.out.println(i.getName())
+        }
     }
 }
 

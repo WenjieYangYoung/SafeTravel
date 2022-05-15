@@ -2,8 +2,11 @@ package com.example.openDataCoursework;
 
 
 import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 
 import com.here.sdk.core.Color;
@@ -13,6 +16,8 @@ import com.here.sdk.core.GeoCorridor;
 import com.here.sdk.core.GeoPolygon;
 import com.here.sdk.core.GeoPolyline;
 import com.here.sdk.core.LanguageCode;
+import com.here.sdk.core.Location;
+import com.here.sdk.core.Metadata;
 import com.here.sdk.core.errors.InstantiationErrorException;
 import com.here.sdk.mapview.MapCamera;
 import com.here.sdk.mapview.MapImage;
@@ -91,7 +96,7 @@ public class Routing {
     public void setEnd(GeoCoordinates coord){
         destinationGeoCoordinates=coord;
     }
-    public void addExampleRoute() {
+    public void addExampleRoute(ArrayList<Crime> listcrime) {
         chargingStationsIDs.clear();
         Waypoint startWaypoint = new Waypoint(startGeoCoordinates);
         Waypoint destinationWaypoint = new Waypoint(destinationGeoCoordinates);
@@ -105,10 +110,9 @@ public class Routing {
                     showDialog("Error while calculating a route: ", routingError.toString());
                     return;
                 }
-
                 // When routingError is nil, routes is guaranteed to contain at least one route.
                 Route route = list.get(0);
-                showRouteOnMap(route);
+                showRouteOnMap(route,listcrime);
                 logRouteViolations(route);
             }
         });
@@ -126,7 +130,7 @@ public class Routing {
     }
 
 
-    private void showRouteOnMap(Route route) {
+    public void showRouteOnMap(Route route,ArrayList<Crime> list) {
         clearMap();
 
         // Show route as polyline.
@@ -135,7 +139,27 @@ public class Routing {
         MapPolyline routeMapPolyline = new MapPolyline(routeGeoPolyline,
                 widthInPixels,
                 Color.valueOf(0, 0.56f, 0.54f, 0.63f)); // RGBA
+    for(int i=0;i<routeGeoPolyline.vertices.size();i=i+4) {
+            for(Crime crime: list){
+                if(routeGeoPolyline.vertices.get(i).distanceTo(crime.getCoordinates())<75){
+                    System.out.println("here3");
+                    if(crime.getName().equals("Violence and sexual offences")){
+                    MapImage mapImage = MapImageFactory.fromResource(context.getResources(), R.drawable.sexualassault);
+                    MapMarker mapMarker = new MapMarker(crime.getCoordinates(), mapImage);
+                    mapView.getMapScene().addMapMarker(mapMarker);
+                    mapMarkers.add(mapMarker);
+                    }else if(crime.getName().equals("Anti-social behaviour")){
+                        MapImage mapImage = MapImageFactory.fromResource(context.getResources(), R.drawable.positioning);
+                        MapMarker mapMarker = new MapMarker(crime.getCoordinates(), mapImage);
+                        mapView.getMapScene().addMapMarker(mapMarker);
+                        mapMarkers.add(mapMarker);
 
+                    }
+                }
+            }
+
+
+        }
         mapView.getMapScene().addMapPolyline(routeMapPolyline);
         mapPolylines.add(routeMapPolyline);
 
@@ -188,7 +212,6 @@ public class Routing {
         builder.setMessage(message);
         builder.show();
     }
-
 
 
 }

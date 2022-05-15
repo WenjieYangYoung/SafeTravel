@@ -180,7 +180,7 @@ class search_and_routing : AppCompatActivity() {
         routeExample.setStart(originList.get(0))
         routeExample.setEnd(destinationList.get(0))
 
-        routeExample.addExampleRoute()
+       // routeExample.addExampleRoute()
     }
     fun clear(view: View) {
         //FAB
