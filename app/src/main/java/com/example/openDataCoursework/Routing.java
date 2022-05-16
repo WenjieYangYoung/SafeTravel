@@ -140,26 +140,50 @@ public class Routing {
                 widthInPixels,
                 Color.valueOf(0, 0.56f, 0.54f, 0.63f)); // RGBA
     for(int i=0;i<routeGeoPolyline.vertices.size();i=i+4) {
-            for(Crime crime: list){
-                if(routeGeoPolyline.vertices.get(i).distanceTo(crime.getCoordinates())<75){
-                    System.out.println("here3");
-                    if(crime.getName().equals("Violence and sexual offences")){
+        for (Crime crime : list) {
+            if (routeGeoPolyline.vertices.get(i).distanceTo(crime.getCoordinates()) < 75) {
+              //  System.out.println("here3");
+                if (crime.getName().equals("Violence and sexual offences")) {
                     MapImage mapImage = MapImageFactory.fromResource(context.getResources(), R.drawable.sexualassault);
                     MapMarker mapMarker = new MapMarker(crime.getCoordinates(), mapImage);
                     mapView.getMapScene().addMapMarker(mapMarker);
                     mapMarkers.add(mapMarker);
-                    }else if(crime.getName().equals("Anti-social behaviour")){
-                        MapImage mapImage = MapImageFactory.fromResource(context.getResources(), R.drawable.positioning);
-                        MapMarker mapMarker = new MapMarker(crime.getCoordinates(), mapImage);
-                        mapView.getMapScene().addMapMarker(mapMarker);
-                        mapMarkers.add(mapMarker);
-
-                    }
+                } else if (crime.getName().equals("Shoplifting")) {
+                    MapImage mapImage = MapImageFactory.fromResource(context.getResources(), R.drawable.kleptomania);
+                    MapMarker mapMarker = new MapMarker(crime.getCoordinates(), mapImage);
+                    mapView.getMapScene().addMapMarker(mapMarker);
+                    mapMarkers.add(mapMarker);
+                } else if (crime.getName().equals("Burglary")) {
+                    MapImage mapImage = MapImageFactory.fromResource(context.getResources(), R.drawable.thief);
+                    MapMarker mapMarker = new MapMarker(crime.getCoordinates(), mapImage);
+                    mapView.getMapScene().addMapMarker(mapMarker);
+                    mapMarkers.add(mapMarker);
+                } else if (crime.getName().equals("Drugs")) {
+                    MapImage mapImage = MapImageFactory.fromResource(context.getResources(), R.drawable.drugs);
+                    MapMarker mapMarker = new MapMarker(crime.getCoordinates(), mapImage);
+                    mapView.getMapScene().addMapMarker(mapMarker);
+                    mapMarkers.add(mapMarker);
+                } else if (crime.getName().equals("Possession of weapons")) {
+                    MapImage mapImage = MapImageFactory.fromResource(context.getResources(), R.drawable.noweapons);
+                    MapMarker mapMarker = new MapMarker(crime.getCoordinates(), mapImage);
+                    mapView.getMapScene().addMapMarker(mapMarker);
+                    mapMarkers.add(mapMarker);
+                } else if (crime.getName().equals("Vehicle crime")) {
+                    MapImage mapImage = MapImageFactory.fromResource(context.getResources(), R.drawable.carsteal);
+                    MapMarker mapMarker = new MapMarker(crime.getCoordinates(), mapImage);
+                    mapView.getMapScene().addMapMarker(mapMarker);
+                    mapMarkers.add(mapMarker);
+                } else {
+                    MapImage mapImage = MapImageFactory.fromResource(context.getResources(), R.drawable.positioning);
+                    MapMarker mapMarker = new MapMarker(crime.getCoordinates(), mapImage);
+                    mapView.getMapScene().addMapMarker(mapMarker);
+                    mapMarkers.add(mapMarker);
                 }
+
+
             }
-
-
         }
+    }
         mapView.getMapScene().addMapPolyline(routeMapPolyline);
         mapPolylines.add(routeMapPolyline);
 

@@ -299,11 +299,11 @@ public class SearchExampleJava {
         SearchOptions options = new SearchOptions();
         options.languageCode = LanguageCode.EN_GB;
         if(type.equals("start")){
-            options.maxItems = 2;
+            options.maxItems = 1;
             clearMap();
             searchEngine.search(query, options, geocodeAddressSearchCallbackStart);
         }else if (type.equals("end")){
-            options.maxItems = 2;
+            options.maxItems = 1;
             searchEngine.search(query, options, geocodeAddressSearchCallbackEnd);
         }
 

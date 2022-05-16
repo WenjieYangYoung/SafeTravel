@@ -240,6 +240,7 @@ class MainActivity : AppCompatActivity() {
 
     fun addExampleRoute(view: View?) {
         routeExample.clearMap()
+        searchExampleJava.clearMap()
         originList = searchExampleJava.getOriginList()
         destinationList = searchExampleJava.getDestinationList();
 

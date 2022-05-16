@@ -28,7 +28,7 @@
             android:layout_marginBottom="50dp"
             android:contentDescription="@string/submit"
             android:onClick="addRegions"
-            android:src="@drawable/icons8funnel24"
+            android:src="@drawable/iconarea"
             app:backgroundTint="@color/white" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
